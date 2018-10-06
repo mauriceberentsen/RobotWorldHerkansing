@@ -299,7 +299,11 @@ namespace Application
 								[this](CommandEvent &anEvent){this->OnStopListening(anEvent);}),
 					GBPosition( 2, 2),
 					GBSpan( 1, 1), EXPAND);
-
+		sizer->Add( makeButton( panel,
+										"sync world",
+										[this](CommandEvent &anEvent){this->OnSyncWorld(anEvent);}),
+							GBPosition( 3, 0),
+							GBSpan( 1, 3), EXPAND);
 		panel->SetSizerAndFit( sizer);
 
 		return panel;
@@ -413,6 +417,35 @@ namespace Application
 									  remotePort,
 									  robot);
 			Messaging::Message message( Model::Robot::MessageType::EchoRequest, "Hello world!");
+			c1ient.dispatchMessage( message);
+		}
+	}
+	/**
+	 *
+	 */
+		void MainFrameWindow::OnSyncWorld( CommandEvent& UNUSEDPARAM(anEvent))
+	{
+		Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot( "Robot");
+		if (robot)
+		{
+			std::string remoteIpAdres = "localhost";
+			std::string remotePort = "12345";
+
+			if (MainApplication::isArgGiven( "-remote_ip"))
+			{
+				remoteIpAdres = MainApplication::getArg( "-remote_ip").value;
+			}
+			if (MainApplication::isArgGiven( "-remote_port"))
+			{
+				remotePort = MainApplication::getArg( "-remote_port").value;
+			}
+
+			// We will request an echo message. The response will be "Hello World", if all goes OK,
+			// "Goodbye cruel world!" if something went wrong.
+			Messaging::Client c1ient( remoteIpAdres,
+									  remotePort,
+									  robot);
+			Messaging::Message message( Model::Robot::MessageType::SyncRequest, Model::RobotWorld::RobotWorld::getRobotWorld().asDebugString());
 			c1ient.dispatchMessage( message);
 		}
 	}

@@ -387,6 +387,13 @@ namespace Model
 	{
 		switch(aMessage.getMessageType())
 		{
+			case SyncRequest:
+			{
+				Application::Logger::log(std::string("Request to sync the world + \n" + aMessage.asString()));
+				aMessage.setMessageType(SyncResponse);
+				aMessage.setBody( Model::RobotWorld::RobotWorld::getRobotWorld().asDebugString());
+				break;
+			}
 			case EchoRequest:
 			{
 				Application::Logger::log( __PRETTY_FUNCTION__ + std::string(": EchoRequest"));
@@ -421,6 +428,13 @@ namespace Model
 	{
 		switch(aMessage.getMessageType())
 		{
+			case SyncResponse:
+			{
+				Application::Logger::log(std::string("Response to sync" + aMessage.asString()));
+				
+
+				break;
+			}
 			case EchoResponse:
 			{
 				Application::Logger::log( __PRETTY_FUNCTION__ + std::string( ": case EchoResponse: not implemented, ") + aMessage.asString());
@@ -451,6 +465,7 @@ namespace Model
 			}
 		}
 	}
+	
 
 	std::string Robot::serializeRobotInfo() const
 	{

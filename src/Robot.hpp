@@ -250,6 +250,8 @@ namespace Model
 			//@{
 			enum MessageType
 			{
+				SyncRequest,
+				SyncResponse,
 				EchoRequest,
 				EchoResponse,
 				EchoLocation
