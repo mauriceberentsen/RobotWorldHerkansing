@@ -445,7 +445,7 @@ namespace Application
 			Messaging::Client c1ient( remoteIpAdres,
 									  remotePort,
 									  robot);
-			Messaging::Message message( Model::Robot::MessageType::SyncRequest, Model::RobotWorld::RobotWorld::getRobotWorld().asDebugString());
+			Messaging::Message message( Model::Robot::MessageType::SyncRequest, Model::RobotWorld::RobotWorld::getRobotWorld().asSerializedString());
 			c1ient.dispatchMessage( message);
 		}
 	}

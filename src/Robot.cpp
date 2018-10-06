@@ -18,6 +18,7 @@
 
 namespace Model
 {
+
 	/**
 	 *
 	 */
@@ -390,8 +391,9 @@ namespace Model
 			case SyncRequest:
 			{
 				Application::Logger::log(std::string("Request to sync the world + \n" + aMessage.asString()));
+				fillWorld(aMessage.asString());
 				aMessage.setMessageType(SyncResponse);
-				aMessage.setBody( Model::RobotWorld::RobotWorld::getRobotWorld().asDebugString());
+				aMessage.setBody( Model::RobotWorld::RobotWorld::getRobotWorld().asSerializedString());
 				break;
 			}
 			case EchoRequest:
@@ -431,6 +433,7 @@ namespace Model
 			case SyncResponse:
 			{
 				Application::Logger::log(std::string("Response to sync" + aMessage.asString()));
+				fillWorld(aMessage.asString());
 				
 
 				break;
@@ -448,13 +451,40 @@ namespace Model
 				Application::Logger::log(aMessage.getBody());
 				std::stringstream ss;
 				ss << aMessage.getBody();
+				char type;
 				std::string aName;
 				unsigned long x;
 				unsigned long y;
-				ss >> aName >> x >> y;
+				ss >> type >> aName >> x >> y;
 				RobotWorld::getRobotWorld().newRobot(aName, Point( x , y ));
 				Application::Logger::log("pure message body is" + aMessage.getBody());
-				Application::Logger::log("the name of the robot is " + aName);// + "/n the postition x:" + static_cast<std::string>(x) + " y:" + static_cast<std::string>(y));
+				Application::Logger::log("the name of the robot is " + aName);
+				// + "/n the postition x:" + static_cast<std::string>(x) + " y:" + static_cast<std::string>(y));
+
+				/**
+				 * 	
+				 * 		Application::Logger::log(aMessage.getBody());
+
+					std::stringstream ss;
+			ss << aMessage.getBody();
+
+			std::string aName;
+			unsigned long x;
+			unsigned long y;
+			unsigned long lx;
+			unsigned long ly;
+
+			ss >> aName >> x >> y >> lx >> ly ;
+
+			Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot( (aName));
+			if(robot){
+
+			robot->setPositionRaw(x,y, true );
+			robot->setFront(BoundedVector(lx,ly) , true);
+			};
+break;
+				 * 
+				 */
 
 				break;
 			}
@@ -465,13 +495,64 @@ namespace Model
 			}
 		}
 	}
-	
+	void Robot::fillWorld(std::string messageBody)
+	{
+	std::vector<std::string> lines;
+	boost::split(lines, messageBody, boost::is_any_of("\n"));
+
+
+
+	for(std::string line : lines)
+	{
+		
+		if(!line.empty())
+		{
+     	 std::stringstream ss;
+     	 std::string Name;
+     	 unsigned long X;
+     	 unsigned long Y;
+     	 unsigned long X2;
+     	 unsigned long Y2;
+
+
+
+			switch (std::stoi(line.at(0))) 
+			{
+				case 0:
+					line.erase(line.begin());
+					ss << line;
+
+					ss >> Name >> X >> Y;
+
+					Model::RobotWorld::getRobotWorld().newRobot("_"+Name, Point(X, Y),false);
+
+
+					break;
+
+				case 1:
+					line.erase(line.begin());
+					ss << line;
+
+					ss >> X >> Y >> X2 >> Y2;
+					Model::RobotWorld::getRobotWorld().newWall(Point(X, Y), Point(X2, Y2),false);
+
+					break;
+
+				default:
+					Application::Logger::log("Unknown object");
+					Application::Logger::log(line);
+					break;
+				}
+			}
+		}
+	notifyObservers();
+	}
 
 	std::string Robot::serializeRobotInfo() const
 	{
 		std::ostringstream os;
 
-		os << name << " " << position.x << " " << position.y;
+		os << "0 " << name << " " << position.x << " " << position.y;
 
 		return os.str();
 	}

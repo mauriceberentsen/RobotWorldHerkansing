@@ -53,6 +53,12 @@ namespace Model
 			/**
 			 * @name Debug functions
 			 */
+			
+			//@{
+			/**
+			 * Returns a serialized description of the object
+			 */
+			virtual std::string asSerializedString() const;
 			//@{
 			/**
 			 * Returns a 1-line description of the object

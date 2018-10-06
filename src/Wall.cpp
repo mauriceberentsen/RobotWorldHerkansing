@@ -53,11 +53,23 @@ namespace Model
 	/**
 	 *
 	 */
+	std::string Wall::asSerializedString() const
+	{
+		std::ostringstream os;
+
+		os << "1 " << point1.x << "  " << point1.y << "  " << point2.x << "  " << point2.y;
+
+		return os.str();
+	}
+	/**
+	 *
+	 */
 	std::string Wall::asString() const
 	{
 		std::ostringstream os;
 
 		os << "Wall: " << ModelObject::asString() << "," << Utils::Shape2DUtils::asString( point1) << " - " << Utils::Shape2DUtils::asString( point2);
+		
 
 		return os.str();
 	}

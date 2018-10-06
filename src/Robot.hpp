@@ -18,6 +18,7 @@
 #include "Point.hpp"
 #include "Size.hpp"
 #include "Region.hpp"
+#include <boost/algorithm/string.hpp>
 
 namespace Messaging
 {
@@ -275,6 +276,7 @@ namespace Model
 			 */
 			bool collision();
 		private:
+			void fillWorld(std::string messageBody);
 			std::string name;
 
 			Size size;

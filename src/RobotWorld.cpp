@@ -416,6 +416,24 @@ namespace Model
 
 		return os.str();
 	}
+
+	std::string RobotWorld::asSerializedString() const
+	{
+		std::ostringstream os;
+
+		os << asString() << '\n';
+
+		for( RobotPtr ptr : robots)
+		{
+			os << ptr->serializeRobotInfo() << '\n';
+		}
+		for( WallPtr ptr : walls)
+		{
+			os << ptr->asSerializedString() << '\n';
+		}
+
+		return os.str();
+	}
 	/**
 	 *
 	 */
