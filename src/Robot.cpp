@@ -4,12 +4,12 @@
 #include <chrono>
 #include "Thread.hpp"
 #include "MathUtils.hpp"
+#include "Shape2DUtils.hpp"
 #include "Logger.hpp"
 #include "Goal.hpp"
 #include "WayPoint.hpp"
 #include "Wall.hpp"
 #include "RobotWorld.hpp"
-#include "Shape2DUtils.hpp"
 #include "CommunicationService.hpp"
 #include "Client.hpp"
 #include "Message.hpp"
@@ -32,8 +32,8 @@ namespace Model
 								driving(false),
 								communicating(false)
 	{
-		std::shared_ptr< AbstractSensor > laserSensor( new LaserDistanceSensor( this));
-		attachSensor( laserSensor);
+		std::shared_ptr< AbstractSensor > proximitySensor( new ProximitySensor( this));
+		attachSensor( proximitySensor);
 	}
 	/**
 	 *
@@ -48,8 +48,8 @@ namespace Model
 								driving(false),
 								communicating(false)
 	{
-		std::shared_ptr< AbstractSensor > laserSensor( new LaserDistanceSensor( this));
-		attachSensor( laserSensor);
+		std::shared_ptr< AbstractSensor > proximitySensor( new ProximitySensor( this));
+		attachSensor( proximitySensor);
 	}
 	/**
 	 *
@@ -65,8 +65,8 @@ namespace Model
 								driving(false),
 								communicating(false)
 	{
-		std::shared_ptr< AbstractSensor > laserSensor( new LaserDistanceSensor( this));
-		attachSensor( laserSensor);
+		std::shared_ptr< AbstractSensor > proximitySensor( new ProximitySensor( this));
+		attachSensor( proximitySensor);
 	}
 	/**
 	 *
@@ -206,50 +206,7 @@ namespace Model
 		driving = false;
 	}
 	/**
-	 *
-	 */
-	void Robot::startCommunicating()
-	{
-		if(!communicating)
-		{
-			communicating = true;
-
-
-			std::string localPort = "12345";
-			if (Application::MainApplication::isArgGiven( "-local_port"))
-			{
-				localPort = Application::MainApplication::getArg( "-local_port").value;
-			}
-
-			Messaging::CommunicationService::getCommunicationService().runRequestHandler( toPtr<Robot>(),
-																						  std::stoi(localPort));
-		}
-	}
-	/**
-	 *
-	 */
-	void Robot::stopCommunicating()
-	{
-		if(communicating)
-		{
-			communicating = false;
-
-			std::string localPort = "12345";
-			if (Application::MainApplication::isArgGiven( "-local_port"))
-			{
-				localPort = Application::MainApplication::getArg( "-local_port").value;
-			}
-
-			Messaging::Client c1ient( 	"localhost",
-										localPort,
-										toPtr<Robot>());
-			Messaging::Message message( 1, "stop");
-			c1ient.dispatchMessage( message);
-		}
-	}
-	/**
-	 *
-	 */
+	 **/
 	Region Robot::getRegion() const
 	{
 		Point translatedPoints[] = { getFrontRight(), getFrontLeft(), getBackLeft(), getBackRight() };
@@ -258,6 +215,7 @@ namespace Model
 	/**
 	 *
 	 */
+	#pragma region movement
 	bool Robot::intersects( const Region& aRegion) const
 	{
 		Region region = getRegion();
@@ -341,6 +299,51 @@ namespace Model
 		/**
 	 *
 	 */
+	#pragma endregion
+	#pragma region communication
+
+	void Robot::startCommunicating()
+	{
+		if(!communicating)
+		{
+			communicating = true;
+
+
+			std::string localPort = "12345";
+			if (Application::MainApplication::isArgGiven( "-local_port"))
+			{
+				localPort = Application::MainApplication::getArg( "-local_port").value;
+			}
+
+			Messaging::CommunicationService::getCommunicationService().runRequestHandler( toPtr<Robot>(),
+																						  std::stoi(localPort));
+		}
+	}
+	/**
+	 *
+	 */
+	void Robot::stopCommunicating()
+	{
+		if(communicating)
+		{
+			communicating = false;
+
+			std::string localPort = "12345";
+			if (Application::MainApplication::isArgGiven( "-local_port"))
+			{
+				localPort = Application::MainApplication::getArg( "-local_port").value;
+			}
+
+			Messaging::Client c1ient( 	"localhost",
+										localPort,
+										toPtr<Robot>());
+			Messaging::Message message( 1, "stop");
+			c1ient.dispatchMessage( message);
+		}
+	}
+	/**
+	 *
+	 */
 	void Robot::BroadcastPostion()
 	{
 
@@ -390,10 +393,11 @@ namespace Model
 		{
 			case SyncRequest:
 			{
+				std::string responseMsgBody = Model::RobotWorld::RobotWorld::getRobotWorld().asSerializedString();
 				Application::Logger::log(std::string("Request to sync the world + \n" + aMessage.asString()));
-				fillWorld(aMessage.asString());
+				fillWorld(aMessage.getBody());
 				aMessage.setMessageType(SyncResponse);
-				aMessage.setBody( Model::RobotWorld::RobotWorld::getRobotWorld().asSerializedString());
+				aMessage.setBody(responseMsgBody );
 				break;
 			}
 			case EchoRequest:
@@ -405,14 +409,33 @@ namespace Model
 				break;
 			}
 
-
 			case EchoLocation:
 			{
-				Application::Logger::log(std::string("The other world wants to know about me, better tell them"));
-				aMessage.setMessageType(EchoLocation);
-				aMessage.setBody(serializeRobotInfo());
+
+ 			Application::Logger::log(aMessage.getBody());
+
+			std::stringstream ss;
+			ss << aMessage.getBody();
+			unsigned long type;
+			std::string aName;
+			unsigned long x;
+			unsigned long y;
+			unsigned long lx;
+			unsigned long ly;
+
+			ss >> type >> aName >> x >> y >> lx >> ly ;
+
+			Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot(("_"+aName));
+			if(robot){
+
+			robot->setPosition(Point(x,y), true );
+			robot->setFront(BoundedVector(lx,ly) , true);
+			}
+			else Application::Logger::log("_"+aName+"     not found" );
+
 				break;
 			}
+
 			
 			default:
 			{
@@ -433,7 +456,7 @@ namespace Model
 			case SyncResponse:
 			{
 				Application::Logger::log(std::string("Response to sync" + aMessage.asString()));
-				fillWorld(aMessage.asString());
+				fillWorld(aMessage.getBody());
 				
 
 				break;
@@ -444,50 +467,14 @@ namespace Model
 
 				break;
 			}
-
 			case EchoLocation:
 			{
-				Application::Logger::log(std::string("We have word of the other world gonna tell you about it:"));
-				Application::Logger::log(aMessage.getBody());
-				std::stringstream ss;
-				ss << aMessage.getBody();
-				char type;
-				std::string aName;
-				unsigned long x;
-				unsigned long y;
-				ss >> type >> aName >> x >> y;
-				RobotWorld::getRobotWorld().newRobot(aName, Point( x , y ));
-				Application::Logger::log("pure message body is" + aMessage.getBody());
-				Application::Logger::log("the name of the robot is " + aName);
-				// + "/n the postition x:" + static_cast<std::string>(x) + " y:" + static_cast<std::string>(y));
-
-				/**
-				 * 	
-				 * 		Application::Logger::log(aMessage.getBody());
-
-					std::stringstream ss;
-			ss << aMessage.getBody();
-
-			std::string aName;
-			unsigned long x;
-			unsigned long y;
-			unsigned long lx;
-			unsigned long ly;
-
-			ss >> aName >> x >> y >> lx >> ly ;
-
-			Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot( (aName));
-			if(robot){
-
-			robot->setPositionRaw(x,y, true );
-			robot->setFront(BoundedVector(lx,ly) , true);
-			};
-break;
-				 * 
-				 */
-
+				Application::Logger::log(std::string("Asume we are in sync"));
 				break;
 			}
+
+
+			
 			default:
 			{
 				Application::Logger::log( __PRETTY_FUNCTION__ + std::string( ": default not implemented, ") + aMessage.asString());
@@ -495,6 +482,109 @@ break;
 			}
 		}
 	}
+	#pragma endregion
+
+	#pragma region stringfuntions
+	std::string Robot::serializeRobotInfo() const
+	{
+		std::ostringstream os;
+	//TODO use enum
+		os << "0 " << name << " " << position.x << " " << position.y<<" "  << front.x << " " << front.y;
+
+		return os.str();
+	}
+
+	/**
+	 *
+	 */
+	std::string Robot::asString() const
+	{
+		std::ostringstream os;
+
+		os << "Robot " << name << " at (" << position.x << "," << position.y << ")";
+
+		return os.str();
+	}
+	/**
+	 *
+	 */
+	std::string Robot::asDebugString() const
+	{
+		std::ostringstream os;
+
+		os << "Robot:\n";
+		os << AbstractAgent::asDebugString();
+		os << "Robot " << name << " at (" << position.x << "," << position.y << ")\n";
+
+		return os.str();
+	}
+	/**
+	 *
+	 */
+	#pragma endregion
+	
+	void Robot::drive()
+	{
+		try
+		{
+			for (std::shared_ptr< AbstractSensor > sensor : sensors)
+			{
+				sensor->setOn();
+			}
+
+			if (speed == 0.0)
+			{
+				speed = 10.0;
+			}
+
+			unsigned pathPoint = 0;
+			while (position.x > 0 && position.x < 500 && position.y > 0 && position.y < 500 && pathPoint < path.size())
+			{
+				const PathAlgorithm::Vertex& vertex = path[pathPoint+=speed];
+				front = BoundedVector( vertex.asPoint(), position);
+				position.x = vertex.x;
+				position.y = vertex.y;
+
+				if (arrived(goal) || collision())
+				{
+					Application::Logger::log(__PRETTY_FUNCTION__ + std::string(": arrived or collision"));DistanceStimulus
+					notifyObservers();
+					break;
+				}
+				if(perceptQueue.size() > 0)
+				{	
+					std::shared_ptr<DistancePercept> DP = std::dynamic_pointer_cast<DistancePercept>(perceptQueue.dequeue());
+					Application::Logger::log(std::to_string(DP->distance));
+
+				}
+
+
+				notifyObservers();
+
+				std::this_thread::sleep_for( std::chrono::milliseconds( 100));
+				BroadcastPostion();
+				// this should be the last thing in the loop
+				if(driving == false)
+				{
+					return;
+				}
+			} // while
+
+			for (std::shared_ptr< AbstractSensor > sensor : sensors)
+			{
+				sensor->setOff();
+			}
+		}
+		catch (std::exception& e)
+		{
+			std::cerr << __PRETTY_FUNCTION__ << ": " << e.what() << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << __PRETTY_FUNCTION__ << ": unknown exception" << std::endl;
+		}
+	}
+
 	void Robot::fillWorld(std::string messageBody)
 	{
 	std::vector<std::string> lines;
@@ -507,6 +597,7 @@ break;
 		
 		if(!line.empty())
 		{
+		 Application::Logger::log(&line.at(0));
      	 std::stringstream ss;
      	 std::string Name;
      	 unsigned long X;
@@ -516,7 +607,7 @@ break;
 
 
 
-			switch (std::stoi(line.at(0))) 
+			switch (std::stoi(&line.at(0))) 
 			{
 				case 0:
 					line.erase(line.begin());
@@ -546,96 +637,6 @@ break;
 			}
 		}
 	notifyObservers();
-	}
-
-	std::string Robot::serializeRobotInfo() const
-	{
-		std::ostringstream os;
-
-		os << "0 " << name << " " << position.x << " " << position.y;
-
-		return os.str();
-	}
-	/**
-	 *
-	 */
-	std::string Robot::asString() const
-	{
-		std::ostringstream os;
-
-		os << "Robot " << name << " at (" << position.x << "," << position.y << ")";
-
-		return os.str();
-	}
-	/**
-	 *
-	 */
-	std::string Robot::asDebugString() const
-	{
-		std::ostringstream os;
-
-		os << "Robot:\n";
-		os << AbstractAgent::asDebugString();
-		os << "Robot " << name << " at (" << position.x << "," << position.y << ")\n";
-
-		return os.str();
-	}
-	/**
-	 *
-	 */
-	void Robot::drive()
-	{
-		try
-		{
-			for (std::shared_ptr< AbstractSensor > sensor : sensors)
-			{
-				//sensor->setOn();
-			}
-
-			if (speed == 0.0)
-			{
-				speed = 10.0;
-			}
-
-			unsigned pathPoint = 0;
-			while (position.x > 0 && position.x < 500 && position.y > 0 && position.y < 500 && pathPoint < path.size())
-			{
-				const PathAlgorithm::Vertex& vertex = path[pathPoint+=speed];
-				front = BoundedVector( vertex.asPoint(), position);
-				position.x = vertex.x;
-				position.y = vertex.y;
-
-				if (arrived(goal) || collision())
-				{
-					Application::Logger::log(__PRETTY_FUNCTION__ + std::string(": arrived or collision"));
-					notifyObservers();
-					break;
-				}
-
-				notifyObservers();
-
-				std::this_thread::sleep_for( std::chrono::milliseconds( 100));
-				BroadcastPostion();
-				// this should be the last thing in the loop
-				if(driving == false)
-				{
-					return;
-				}
-			} // while
-
-			for (std::shared_ptr< AbstractSensor > sensor : sensors)
-			{
-				//sensor->setOff();
-			}
-		}
-		catch (std::exception& e)
-		{
-			std::cerr << __PRETTY_FUNCTION__ << ": " << e.what() << std::endl;
-		}
-		catch (...)
-		{
-			std::cerr << __PRETTY_FUNCTION__ << ": unknown exception" << std::endl;
-		}
 	}
 	/**
 	 *

@@ -421,8 +421,6 @@ namespace Model
 	{
 		std::ostringstream os;
 
-		os << asString() << '\n';
-
 		for( RobotPtr ptr : robots)
 		{
 			os << ptr->serializeRobotInfo() << '\n';

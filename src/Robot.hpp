@@ -257,6 +257,10 @@ namespace Model
 				EchoResponse,
 				EchoLocation
 			};
+//TODO add getter for these three and make them private again
+			Size size;
+			Point position;
+			BoundedVector front;
 
 		protected:
 			/**
@@ -279,10 +283,6 @@ namespace Model
 			void fillWorld(std::string messageBody);
 			std::string name;
 
-			Size size;
-			Point position;
-
-			BoundedVector front;
 			float speed;
 
 			GoalPtr goal;
