@@ -547,22 +547,23 @@ namespace Model
 
 				if (arrived(goal) || collision())
 				{
-					Application::Logger::log(__PRETTY_FUNCTION__ + std::string(": arrived or collision"));DistanceStimulus
+					Application::Logger::log(__PRETTY_FUNCTION__ + std::string(": arrived or collision"));
 					notifyObservers();
 					break;
 				}
+
 				if(perceptQueue.size() > 0)
 				{	
-					std::shared_ptr<DistancePercept> DP = std::dynamic_pointer_cast<DistancePercept>(perceptQueue.dequeue());
-					Application::Logger::log(std::to_string(DP->distance));
+					std::shared_ptr<CollisionPercept> CP = std::dynamic_pointer_cast<CollisionPercept>(perceptQueue.dequeue());
+					Application::Logger::log(std::to_string(CP->collision));
 
 				}
 
 
 				notifyObservers();
+				BroadcastPostion();
 
 				std::this_thread::sleep_for( std::chrono::milliseconds( 100));
-				BroadcastPostion();
 				// this should be the last thing in the loop
 				if(driving == false)
 				{

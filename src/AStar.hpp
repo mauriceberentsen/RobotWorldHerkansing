@@ -13,6 +13,7 @@
 #include "Point.hpp"
 #include "Size.hpp"
 
+
 namespace PathAlgorithm
 {
 	struct Vertex

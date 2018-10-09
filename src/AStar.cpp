@@ -2,12 +2,16 @@
 #include <RobotWorld.hpp>
 #include <Shape2DUtils.hpp>
 #include <Wall.hpp>
+#include <Robot.hpp>
 #include <algorithm>
 #include <cmath>
 #include <iterator>
 #include <sstream>
 #include <stdexcept>
 #include <utility>
+
+
+
 
 namespace PathAlgorithm
 {
@@ -56,6 +60,7 @@ namespace PathAlgorithm
 		static int yOffset[] = { 1, 1, 0, -1, -1, -1, 0, 1 };
 
 		const std::vector< Model::WallPtr >& walls = Model::RobotWorld::getRobotWorld().getWalls();
+		const std::vector< Model::RobotPtr >& robots = Model::RobotWorld::getRobotWorld().getRobots();
 		std::vector< Vertex > neighbours;
 
 		for (int i = 0; i < 8; ++i)
@@ -69,6 +74,18 @@ namespace PathAlgorithm
 				{
 					addToNeigbours = false;
 					break;
+				}
+			}
+			for (Model::RobotPtr otherRobot : robots)
+			{
+				if(otherRobot->getName().compare("Robot") == true)
+				{
+					if (Utils::Shape2DUtils::isOnLine( otherRobot->getFrontLeft(),otherRobot->getFrontRight(), vertex.asPoint(), aFreeRadius) ||
+						Utils::Shape2DUtils::isOnLine( otherRobot->getBackLeft(),otherRobot->getBackRight(), vertex.asPoint(), aFreeRadius) )
+					{
+						addToNeigbours = false;
+						break;
+					}
 				}
 			}
 			if (addToNeigbours == true)

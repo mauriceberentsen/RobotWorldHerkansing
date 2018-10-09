@@ -195,7 +195,7 @@ namespace Model
 			 */
 			Point getBackRight() const;
 
-			bool collision();
+			bool collision() const;
 	};
 } // namespace Model
 #endif /* LASERDISTANCESENSOR_HPP_ */

@@ -87,7 +87,7 @@ namespace Model
 	 */
 	std::shared_ptr< AbstractStimulus > ProximitySensor::getStimulus() const
 	{
-		std::shared_ptr< AbstractStimulus > collisionStimulus( new CollisionStimulus(true));
+		std::shared_ptr< AbstractStimulus > collisionStimulus( new CollisionStimulus(collision()));
 		return collisionStimulus;
 	}
 	/**
@@ -96,7 +96,7 @@ namespace Model
 	std::shared_ptr< AbstractPercept > ProximitySensor::getPerceptFor( std::shared_ptr< AbstractStimulus > anAbstractStimulus) const
 	{
 		CollisionStimulus* collisionStimulus = dynamic_cast< CollisionStimulus* >( anAbstractStimulus.get());
-		return std::shared_ptr< AbstractPercept >( new CollisionStimulus( collisionStimulus->collision));
+		return std::shared_ptr< AbstractPercept >( new CollisionPercept( collisionStimulus->collision));
 	}
 	/**
 	 *
@@ -136,9 +136,9 @@ namespace Model
 	{
 		// x and y are pointing to top left now
 		int x = _Robot->position.x - (_Robot->size.x / 2);
-		int y = _Robot->position.y - (_Robot->size.y / 2);
+		int y = _Robot->position.y - (_Robot->size.y );
 
-		Point originalFrontLeft( x, y);
+		Point originalFrontLeft( x, y - _Robot->size.y);
 		double angle = Utils::Shape2DUtils::getAngle( _Robot->front) + 0.5 * Utils::PI;
 
 		Point frontLeft( (originalFrontLeft.x - _Robot->position.x) * std::cos( angle) - (originalFrontLeft.y - _Robot->position.y) * std::sin( angle) + _Robot->position.x, (originalFrontLeft.y - _Robot->position.y) * std::cos( angle)
@@ -156,7 +156,7 @@ namespace Model
 		int y = _Robot->position.y - (_Robot->size.y / 2);
 		
 
-		Point originalFrontRight( x + _Robot->size.x, y);
+		Point originalFrontRight( x + _Robot->size.x, y - _Robot->size.y);
 		double angle = Utils::Shape2DUtils::getAngle( _Robot->front) + 0.5 * Utils::PI;
 
 		Point frontRight( (originalFrontRight.x - _Robot->position.x) * std::cos( angle) - (originalFrontRight.y - _Robot->position.y) * std::sin( angle) + _Robot->position.x, (originalFrontRight.y - _Robot->position.y)
@@ -173,7 +173,7 @@ namespace Model
 		int x = _Robot->position.x - (_Robot->size.x / 2);
 		int y = _Robot->position.y - (_Robot->size.y / 2);
 
-		Point originalBackLeft( x, y + _Robot->size.y);
+		Point originalBackLeft( x, y);
 
 		double angle = Utils::Shape2DUtils::getAngle( _Robot->front) + 0.5 * Utils::PI;
 
@@ -192,7 +192,7 @@ namespace Model
 		int x = _Robot->position.x - (_Robot->size.x / 2);
 		int y = _Robot->position.y - (_Robot->size.y / 2);
 
-		Point originalBackRight( x + _Robot->size.x, y + _Robot->size.y);
+		Point originalBackRight( x + _Robot->size.x, y );
 
 		double angle = Utils::Shape2DUtils::getAngle( _Robot->front) + 0.5 * Utils::PI;
 
@@ -203,20 +203,22 @@ namespace Model
 	}
 	#pragma endregion
 
-	bool ProximitySensor::collision()
+	bool ProximitySensor::collision() const
 	{
 		Point frontLeft = getFrontLeft();
 		Point frontRight = getFrontRight();
 		Point backLeft = getBackLeft();
 		Point backRight = getBackRight();
 
+
 		const std::vector<RobotPtr>& robots = RobotWorld::getRobotWorld().getRobots();
 		for(RobotPtr otherRobot :  robots)
 		{
 			if(otherRobot != _Robot)			{
 			if (Utils::Shape2DUtils::intersect( frontLeft, frontRight, otherRobot->getFrontLeft(), otherRobot->getFrontRight()) ||
-							Utils::Shape2DUtils::intersect( frontLeft, backLeft, otherRobot->getFrontLeft(), otherRobot->getBackRight()) ||
-							Utils::Shape2DUtils::intersect( frontRight, backRight, otherRobot->getFrontRight(), otherRobot->getBackRight()))
+				Utils::Shape2DUtils::intersect( backLeft, backRight, otherRobot->getBackLeft(), otherRobot->getBackRight()) ||
+				Utils::Shape2DUtils::intersect( frontLeft, backLeft, otherRobot->getFrontLeft(), otherRobot->getBackRight()) ||
+				Utils::Shape2DUtils::intersect( frontRight, backRight, otherRobot->getFrontRight(), otherRobot->getBackRight()))
 			{
 				return true;
 			}
