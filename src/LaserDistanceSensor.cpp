@@ -136,9 +136,9 @@ namespace Model
 	{
 		// x and y are pointing to top left now
 		int x = _Robot->position.x - (_Robot->size.x / 2);
-		int y = _Robot->position.y - (_Robot->size.y );
+		int y = _Robot->position.y - (_Robot->size.y /2 );
 
-		Point originalFrontLeft( x, y - _Robot->size.y);
+		Point originalFrontLeft( x - 0.1* _Robot->size.x, y - 1.5 * _Robot->size.y);
 		double angle = Utils::Shape2DUtils::getAngle( _Robot->front) + 0.5 * Utils::PI;
 
 		Point frontLeft( (originalFrontLeft.x - _Robot->position.x) * std::cos( angle) - (originalFrontLeft.y - _Robot->position.y) * std::sin( angle) + _Robot->position.x, (originalFrontLeft.y - _Robot->position.y) * std::cos( angle)
@@ -156,7 +156,7 @@ namespace Model
 		int y = _Robot->position.y - (_Robot->size.y / 2);
 		
 
-		Point originalFrontRight( x + _Robot->size.x, y - _Robot->size.y);
+		Point originalFrontRight( x + 1.1 * _Robot->size.x, y - 1.5 * _Robot->size.y);
 		double angle = Utils::Shape2DUtils::getAngle( _Robot->front) + 0.5 * Utils::PI;
 
 		Point frontRight( (originalFrontRight.x - _Robot->position.x) * std::cos( angle) - (originalFrontRight.y - _Robot->position.y) * std::sin( angle) + _Robot->position.x, (originalFrontRight.y - _Robot->position.y)
@@ -173,7 +173,7 @@ namespace Model
 		int x = _Robot->position.x - (_Robot->size.x / 2);
 		int y = _Robot->position.y - (_Robot->size.y / 2);
 
-		Point originalBackLeft( x, y);
+		Point originalBackLeft( x - 0.1* _Robot->size.x, y);
 
 		double angle = Utils::Shape2DUtils::getAngle( _Robot->front) + 0.5 * Utils::PI;
 
@@ -192,7 +192,7 @@ namespace Model
 		int x = _Robot->position.x - (_Robot->size.x / 2);
 		int y = _Robot->position.y - (_Robot->size.y / 2);
 
-		Point originalBackRight( x + _Robot->size.x, y );
+		Point originalBackRight( x + 1.1 * _Robot->size.x + _Robot->size.x, y );
 
 		double angle = Utils::Shape2DUtils::getAngle( _Robot->front) + 0.5 * Utils::PI;
 

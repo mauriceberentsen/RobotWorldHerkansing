@@ -282,6 +282,11 @@ namespace Application
 								[this](CommandEvent &anEvent){this->OnStopRobot(anEvent);}),
 					GBPosition( 1, 1),
 					GBSpan( 1, 1), EXPAND);
+		sizer->Add( makeButton( panel,
+								"Start both",
+								[this](CommandEvent &anEvent){this->OnStartBoth(anEvent);}),
+					GBPosition( 1, 2),
+					GBSpan( 1, 1), EXPAND);
 
 
 		sizer->Add( makeButton( panel,
@@ -353,6 +358,39 @@ namespace Application
 		{
 			robot->startActing();
 		}
+	}
+
+	void MainFrameWindow::OnStartBoth( CommandEvent& UNUSEDPARAM(anEvent))
+	{
+		Logger::log( "Attempting to start both Robots...");
+		Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot( "Robot");
+		if (robot)
+		{
+			std::string remoteIpAdres = "localhost";
+			std::string remotePort = "12345";
+
+			if (MainApplication::isArgGiven( "-remote_ip"))
+			{
+				remoteIpAdres = MainApplication::getArg( "-remote_ip").value;
+			}
+			if (MainApplication::isArgGiven( "-remote_port"))
+			{
+				remotePort = MainApplication::getArg( "-remote_port").value;
+			}
+
+			// We will request an echo message. The response will be "Hello World", if all goes OK,
+			// "Goodbye cruel world!" if something went wrong.
+			Messaging::Client c1ient( remoteIpAdres,
+									  remotePort,
+									  robot);
+			Messaging::Message message( Model::Robot::MessageType::StartRequest, "drive!!");
+			c1ient.dispatchMessage( message);
+		}
+		if (robot && !robot->isActing())
+		{
+			robot->startActing();
+		}
+
 	}
 	/**
 	 *

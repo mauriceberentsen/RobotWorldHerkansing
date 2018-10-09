@@ -114,6 +114,7 @@ namespace Model
 			{
 				return acting;
 			}
+			int randomNumberBetweenUpToN(int N =100 );
 			/**
 			 *
 			 */
@@ -185,6 +186,9 @@ namespace Model
 			/**
 			 * @name Observer functions
 			 */
+			virtual void negotiate();
+
+			virtual void drivingAllowed();
 			//@{
 			/**
 			 * A Notifier will call this function if this Observer will handle the notifications of that
@@ -255,7 +259,13 @@ namespace Model
 				SyncResponse,
 				EchoRequest,
 				EchoResponse,
-				EchoLocation
+				EchoLocation,
+				NegotiateRequest,
+				NegotiateResponse,
+				DriveRequest,
+				DriveResponse,
+				StartRequest,
+				StartResponse
 			};
 //TODO add getter for these three and make them private again
 			Size size;
@@ -292,6 +302,7 @@ namespace Model
 			bool acting;
 			bool driving;
 			bool communicating;
+			bool win =  false;
 
 			std::thread robotThread;
 			mutable std::recursive_mutex robotMutex;

@@ -90,6 +90,7 @@ namespace Application
 			void OnAbout( CommandEvent& anEvent);
 
 			void OnStartRobot( CommandEvent& anEvent);
+			void OnStartBoth( CommandEvent& anEvent);
 			void OnStopRobot( CommandEvent& anEvent);
 			void OnPopulate( CommandEvent& anEvent);
 			void OnUnpopulate( CommandEvent& anEvent);

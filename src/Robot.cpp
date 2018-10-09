@@ -15,6 +15,7 @@
 #include "Message.hpp"
 #include "MainApplication.hpp"
 #include "LaserDistanceSensor.hpp"
+#include <stdlib.h>
 
 namespace Model
 {
@@ -85,6 +86,11 @@ namespace Model
 		{
 			stopCommunicating();
 		}
+	}
+	int Robot::randomNumberBetweenUpToN(int N /*=100 */)
+	{
+		std::srand(position.x + position.y);
+		return std::rand() % N + 1;
 	}
 	/**
 	 *
@@ -374,6 +380,69 @@ namespace Model
 			}
 		
 	}
+		/**
+	 *
+	 */
+	void Robot::negotiate()
+	{
+
+			std::string remoteIpAdres = "localhost";
+			std::string remotePort = "12345";
+			Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot( "Robot");
+			if(robot)
+				{
+				if (Application::MainApplication::isArgGiven( "-remote_ip"))
+				{
+					remoteIpAdres = Application::MainApplication::getArg( "-remote_ip").value;
+				}
+				if (Application::MainApplication::isArgGiven( "-remote_port"))
+				{
+					remotePort = Application::MainApplication::getArg( "-remote_port").value;
+				}
+
+				// We will request an echo message. The response will be "Hello World", if all goes OK,
+				// "Goodbye cruel world!" if something went wrong.
+				Messaging::Client c1ient( remoteIpAdres,
+										remotePort,
+										robot);
+				Messaging::Message message( Model::Robot::MessageType::NegotiateRequest,std::to_string(randomNumberBetweenUpToN()));
+				c1ient.dispatchMessage( message);
+			}
+			else{
+				std::cout<<"Something went wrong"<<std::endl;
+			}
+		
+	}
+
+	void Robot::drivingAllowed()
+	{
+			std::string remoteIpAdres = "localhost";
+			std::string remotePort = "12345";
+			Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot( "Robot");
+			if(robot)
+				{
+				if (Application::MainApplication::isArgGiven( "-remote_ip"))
+				{
+					remoteIpAdres = Application::MainApplication::getArg( "-remote_ip").value;
+				}
+				if (Application::MainApplication::isArgGiven( "-remote_port"))
+				{
+					remotePort = Application::MainApplication::getArg( "-remote_port").value;
+				}
+
+				// We will request an echo message. The response will be "Hello World", if all goes OK,
+				// "Goodbye cruel world!" if something went wrong.
+				Messaging::Client c1ient( remoteIpAdres,
+										remotePort,
+										robot);
+				Messaging::Message message( Model::Robot::MessageType::DriveRequest,"");
+				c1ient.dispatchMessage( message);
+			}
+			else{
+				std::cout<<"Something went wrong"<<std::endl;
+			}
+
+	}
 	void Robot::handleNotification()
 	{
 		//	std::unique_lock<std::recursive_mutex> lock(robotMutex);
@@ -435,6 +504,42 @@ namespace Model
 
 				break;
 			}
+			case NegotiateRequest:
+			{
+				stopDriving();
+				Application::Logger::log(" someone is near lets negotiate");
+				aMessage.setMessageType(NegotiateResponse);
+				if(driving)
+				{
+					std::stringstream ss;
+					ss << aMessage.getBody();
+					unsigned long OtherRoll;
+					ss >> OtherRoll;
+					unsigned long OurRoll = randomNumberBetweenUpToN();
+					win = (OtherRoll <= OurRoll);
+					aMessage.setBody( std::to_string(win));
+				
+					if(win) startDriving();
+
+				}
+				else
+				{
+					aMessage.setBody( std::to_string(false));	
+				}
+				break;
+			}
+			case DriveRequest:
+			{
+				startDriving();
+				aMessage.setMessageType(DriveResponse);
+				break;
+			}
+			case StartRequest:
+			{
+				startActing();
+				aMessage.setMessageType(ActingResponse);
+				break;
+			}
 
 			
 			default:
@@ -471,6 +576,20 @@ namespace Model
 			{
 				Application::Logger::log(std::string("Asume we are in sync"));
 				break;
+			}
+			case NegotiateResponse:
+			{
+				Application::Logger::log(" Did we win?  " +  aMessage.getBody());
+				std::stringstream ss;
+				ss << aMessage.getBody();
+				ss >> win;
+				/*flip result since it tells the result of the other*/ win = !win;
+				if(win) startDriving();
+				break;
+			}
+			case DriveResponse:
+			{
+				Application::Logger::log("Other is resuming ");
 			}
 
 
@@ -529,7 +648,7 @@ namespace Model
 		{
 			for (std::shared_ptr< AbstractSensor > sensor : sensors)
 			{
-				sensor->setOn();
+				sensor->setOn(50);
 			}
 
 			if (speed == 0.0)
@@ -548,22 +667,31 @@ namespace Model
 				if (arrived(goal) || collision())
 				{
 					Application::Logger::log(__PRETTY_FUNCTION__ + std::string(": arrived or collision"));
+					
 					notifyObservers();
 					break;
 				}
 
+				if (arrived(goal) && win){
+					drivingAllowed();
+				} 
+
 				if(perceptQueue.size() > 0)
 				{	
 					std::shared_ptr<CollisionPercept> CP = std::dynamic_pointer_cast<CollisionPercept>(perceptQueue.dequeue());
-					Application::Logger::log(std::to_string(CP->collision));
+					if(CP->collision)
+					{
+						stopDriving();
+						negotiate();
+					}
 
 				}
 
 
-				notifyObservers();
 				BroadcastPostion();
+				notifyObservers();
 
-				std::this_thread::sleep_for( std::chrono::milliseconds( 100));
+				std::this_thread::sleep_for( std::chrono::milliseconds( 50));
 				// this should be the last thing in the loop
 				if(driving == false)
 				{
