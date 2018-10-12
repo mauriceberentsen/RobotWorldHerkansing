@@ -255,7 +255,7 @@ namespace Model
 			//@{
 			enum MessageType
 			{
-				SyncRequest,
+				SyncRequest = 50,
 				SyncResponse,
 				EchoRequest,
 				EchoResponse,
@@ -302,6 +302,7 @@ namespace Model
 			bool acting;
 			bool driving;
 			bool communicating;
+			bool masterDeterminated = false;
 			bool win =  false;
 
 			std::thread robotThread;

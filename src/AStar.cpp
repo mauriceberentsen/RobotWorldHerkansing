@@ -1,5 +1,6 @@
 #include <AStar.hpp>
 #include <RobotWorld.hpp>
+#include <RobotWorldCanvas.hpp>
 #include <Shape2DUtils.hpp>
 #include <Wall.hpp>
 #include <Robot.hpp>
@@ -80,14 +81,29 @@ namespace PathAlgorithm
 			{
 				if(otherRobot->getName().compare("Robot") == true)
 				{
-					if (Utils::Shape2DUtils::isOnLine( otherRobot->getFrontLeft(),otherRobot->getFrontRight(), vertex.asPoint(), aFreeRadius) ||
-						Utils::Shape2DUtils::isOnLine( otherRobot->getBackLeft(),otherRobot->getBackRight(), vertex.asPoint(), aFreeRadius) )
+					if (Utils::Shape2DUtils::isOnLine( otherRobot->Robot::getFrontLeft(),otherRobot->Robot::getFrontRight(), vertex.asPoint(), 1) || 
+						Utils::Shape2DUtils::isOnLine( otherRobot->Robot::getBackLeft(),otherRobot->Robot::getBackRight(), vertex.asPoint(), 1)  || 
+						Utils::Shape2DUtils::isOnLine( otherRobot->Robot::getBackLeft(),otherRobot->Robot::getFrontLeft(), vertex.asPoint(), 1)  || 
+						Utils::Shape2DUtils::isOnLine( otherRobot->Robot::getFrontRight(),otherRobot->Robot::getBackRight(), vertex.asPoint(), 1) )	 
 					{
 						addToNeigbours = false;
 						break;
 					}
 				}
 			}
+
+			if (Utils::Shape2DUtils::isOnLine( Point(0,0), Point(View::RobotWorldCanvas::WorldSize,0), vertex.asPoint(), 1) || //left down --> left  up
+				Utils::Shape2DUtils::isOnLine( Point(0,0), Point(0,View::RobotWorldCanvas::WorldSize), vertex.asPoint(), 1) ||//right down --> right up 
+				Utils::Shape2DUtils::isOnLine( Point(View::RobotWorldCanvas::WorldSize,View::RobotWorldCanvas::WorldSize), Point(View::RobotWorldCanvas::WorldSize,0), vertex.asPoint(), 1) || //left down --> right down
+				Utils::Shape2DUtils::isOnLine( Point(View::RobotWorldCanvas::WorldSize,View::RobotWorldCanvas::WorldSize), Point(0,View::RobotWorldCanvas::WorldSize), vertex.asPoint(), 1) )	 
+			{
+				addToNeigbours = false;
+				break;
+			}
+			//			while (position.x > 0 && position.x < 500 && position.y > 0 && position.y < 500 && pathPoint < path.size())
+
+
+			//TODO worldcanvas size limit
 			if (addToNeigbours == true)
 			{
 				neighbours.push_back( vertex);

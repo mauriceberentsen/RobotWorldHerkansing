@@ -480,9 +480,6 @@ namespace Model
 
 			case EchoLocation:
 			{
-
- 			Application::Logger::log(aMessage.getBody());
-
 			std::stringstream ss;
 			ss << aMessage.getBody();
 			unsigned long type;
@@ -526,25 +523,31 @@ namespace Model
 				{
 					aMessage.setBody( std::to_string(false));	
 				}
+				masterDeterminated = true;
 				break;
 			}
 			case DriveRequest:
 			{
+				Application::Logger::log("Master arrived I may drive");
 				startDriving();
 				aMessage.setMessageType(DriveResponse);
 				break;
 			}
+
 			case StartRequest:
 			{
-				startActing();
-				aMessage.setMessageType(ActingResponse);
+				if (!acting)
+				{
+					startActing();
+				}
+				aMessage.setMessageType(StartResponse);
 				break;
 			}
 
 			
 			default:
 			{
-				Application::Logger::log( __PRETTY_FUNCTION__ + std::string(": default"));
+				Application::Logger::log(aMessage.asString());
 
 				aMessage.setBody( " default  Goodbye cruel world!");
 				break;
@@ -574,7 +577,6 @@ namespace Model
 			}
 			case EchoLocation:
 			{
-				Application::Logger::log(std::string("Asume we are in sync"));
 				break;
 			}
 			case NegotiateResponse:
@@ -585,13 +587,19 @@ namespace Model
 				ss >> win;
 				/*flip result since it tells the result of the other*/ win = !win;
 				if(win) startDriving();
+				masterDeterminated = true;;
 				break;
 			}
 			case DriveResponse:
 			{
 				Application::Logger::log("Other is resuming ");
+				break;
 			}
-
+			case StartResponse:
+			{
+				Application::Logger::log("Other is starting ");
+				break;
+			}
 
 			
 			default:
@@ -663,23 +671,24 @@ namespace Model
 				front = BoundedVector( vertex.asPoint(), position);
 				position.x = vertex.x;
 				position.y = vertex.y;
+				BroadcastPostion();
+
+				if (arrived(goal) && win){
+					drivingAllowed();
+					notifyObservers();
+				} 
 
 				if (arrived(goal) || collision())
 				{
 					Application::Logger::log(__PRETTY_FUNCTION__ + std::string(": arrived or collision"));
-					
 					notifyObservers();
 					break;
 				}
 
-				if (arrived(goal) && win){
-					drivingAllowed();
-				} 
-
 				if(perceptQueue.size() > 0)
 				{	
 					std::shared_ptr<CollisionPercept> CP = std::dynamic_pointer_cast<CollisionPercept>(perceptQueue.dequeue());
-					if(CP->collision)
+					if(CP->collision && !masterDeterminated)
 					{
 						stopDriving();
 						negotiate();
@@ -688,7 +697,6 @@ namespace Model
 				}
 
 
-				BroadcastPostion();
 				notifyObservers();
 
 				std::this_thread::sleep_for( std::chrono::milliseconds( 50));

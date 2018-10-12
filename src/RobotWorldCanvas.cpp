@@ -81,6 +81,7 @@ namespace View
 	{
 		initialise();
 	}
+	
 	/**
 	 *
 	 */
@@ -453,7 +454,7 @@ namespace View
 	 */
 	void RobotWorldCanvas::initialise()
 	{
-		SetMinSize( Size( 500, 500));
+		SetMinSize( Size( RobotWorldCanvas::WorldSize, RobotWorldCanvas::WorldSize));
 
 		notificationHandler = new Base::NotificationHandler< std::function< void( NotifyEvent&) > >( [this](NotifyEvent& anEvent){this->OnNotificationEvent(anEvent);});
 		PushEventHandler( notificationHandler);

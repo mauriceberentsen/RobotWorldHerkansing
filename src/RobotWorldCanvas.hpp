@@ -169,6 +169,8 @@ namespace View
 			 * Removes everything from the world
 			 */
 			void unpopulate();
+
+			static const int WorldSize = 500;
 		protected:
 			/**
 			 * Common initialise function
