@@ -290,6 +290,7 @@ namespace Model
 			 */
 			bool collision();
 		private:
+			void restartDriving();
 			void fillWorld(std::string messageBody);
 			std::string name;
 

@@ -301,11 +301,23 @@ namespace Model
 		}
 		*/
 
-		RobotWorld::getRobotWorld().newWall( Point(7,234), Point(419,234) ,false);
+	//	RobotWorld::getRobotWorld().newWall( Point(7,234), Point(419,234) ,false);
 		RobotWorld::getRobotWorld().newGoal( "Goal", Point(320,285),false);
 
 		notifyObservers();
 	}
+
+
+	/**
+	 * TODO: alle situaties uitwerken.
+	 */
+	void RobotWorld::situationOne()
+	{
+
+	}
+
+
+
 	/**
 	 *
 	 */

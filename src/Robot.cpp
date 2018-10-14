@@ -209,7 +209,17 @@ namespace Model
 	 */
 	void Robot::stopDriving()
 	{
+		setSpeed(0.0);
+		//driving = false;
+	}
+
+	void Robot::restartDriving()
+	{
 		driving = false;
+		robotThread.join();
+		driving = true;
+		std::thread newRobotThread( [this]{	startDriving();});
+		robotThread.swap( newRobotThread);
 	}
 	/**
 	 **/
@@ -492,8 +502,8 @@ namespace Model
 			ss >> type >> aName >> x >> y >> lx >> ly ;
 
 			Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot(("_"+aName));
-			if(robot){
 
+			if(robot){
 			robot->setPosition(Point(x,y), true );
 			robot->setFront(BoundedVector(lx,ly) , true);
 			}
@@ -515,8 +525,10 @@ namespace Model
 					unsigned long OurRoll = randomNumberBetweenUpToN();
 					win = (OtherRoll <= OurRoll);
 					aMessage.setBody( std::to_string(win));
+					Application::Logger::log(" Do we come here?");
+
 				
-					if(win) startDriving();
+					if(win) restartDriving();
 
 				}
 				else
@@ -529,7 +541,7 @@ namespace Model
 			case DriveRequest:
 			{
 				Application::Logger::log("Master arrived I may drive");
-				startDriving();
+				restartDriving();
 				aMessage.setMessageType(DriveResponse);
 				break;
 			}
@@ -564,9 +576,7 @@ namespace Model
 			case SyncResponse:
 			{
 				Application::Logger::log(std::string("Response to sync" + aMessage.asString()));
-				fillWorld(aMessage.getBody());
-				
-
+				fillWorld(aMessage.getBody());	
 				break;
 			}
 			case EchoResponse:
@@ -586,8 +596,8 @@ namespace Model
 				ss << aMessage.getBody();
 				ss >> win;
 				/*flip result since it tells the result of the other*/ win = !win;
-				if(win) startDriving();
-				masterDeterminated = true;;
+				masterDeterminated = true;
+				if(win) restartDriving();
 				break;
 			}
 			case DriveResponse:
@@ -661,7 +671,7 @@ namespace Model
 
 			if (speed == 0.0)
 			{
-				speed = 10.0;
+				speed = 2.0;
 			}
 
 			unsigned pathPoint = 0;
@@ -682,6 +692,10 @@ namespace Model
 				{
 					Application::Logger::log(__PRETTY_FUNCTION__ + std::string(": arrived or collision"));
 					notifyObservers();
+					if(arrived(goal))
+					{
+						masterDeterminated = false;
+					}
 					break;
 				}
 
