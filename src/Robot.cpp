@@ -180,6 +180,8 @@ namespace Model
 	 */
 	void Robot::startActing()
 	{
+		RobotWorld::getRobotWorld().newGoal("startPos", position);
+		startPosition =  RobotWorld::getRobotWorld().getGoal("startPos");
 		acting = true;
 		std::thread newRobotThread( [this]{	startDriving();});
 		robotThread.swap( newRobotThread);
@@ -192,6 +194,7 @@ namespace Model
 		acting = false;
 		driving = false;
 		robotThread.join();
+		RobotWorld::getRobotWorld().deleteGoal(startPosition);
 	}
 	/**
 	 *
@@ -199,19 +202,33 @@ namespace Model
 	void Robot::startDriving()
 	{
 		driving = true;
-
+		if(!droveBack)
+		{
 		goal = RobotWorld::getRobotWorld().getGoal( "Goal");
 		calculateRoute(goal);
-
+		}
+		if(droveBack)
+		{
+			calculateRoute(startPosition);
+		}
+		if(path.empty() && win)
+			{
+				sendBack();
+				// send other back.
+			}
 		drive();
 	}
+	void Robot::haltDriving()
+	{
+		setSpeed(0.0);
+	}
+
 	/**
 	 *
 	 */
 	void Robot::stopDriving()
 	{
-		setSpeed(0.0);
-		//driving = false;
+		driving = false;
 	}
 
 	void Robot::restartDriving()
@@ -425,6 +442,35 @@ namespace Model
 		
 	}
 
+	void Robot::sendBack()
+	{
+			std::string remoteIpAdres = "localhost";
+			std::string remotePort = "12345";
+			Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot( "Robot");
+			if(robot)
+				{
+				if (Application::MainApplication::isArgGiven( "-remote_ip"))
+				{
+					remoteIpAdres = Application::MainApplication::getArg( "-remote_ip").value;
+				}
+				if (Application::MainApplication::isArgGiven( "-remote_port"))
+				{
+					remotePort = Application::MainApplication::getArg( "-remote_port").value;
+				}
+
+				// We will request an echo message. The response will be "Hello World", if all goes OK,
+				// "Goodbye cruel world!" if something went wrong.
+				Messaging::Client c1ient( remoteIpAdres,
+										remotePort,
+										robot);
+				Messaging::Message message( Model::Robot::MessageType::SendBackRequest," ");
+				c1ient.dispatchMessage( message);
+			}
+			else{
+				std::cout<<"Something went wrong"<<std::endl;
+			}
+	}
+
 	void Robot::drivingAllowed()
 	{
 			std::string remoteIpAdres = "localhost";
@@ -514,7 +560,7 @@ namespace Model
 			}
 			case NegotiateRequest:
 			{
-				stopDriving();
+				haltDriving();
 				Application::Logger::log(" someone is near lets negotiate");
 				aMessage.setMessageType(NegotiateResponse);
 				if(driving)
@@ -530,6 +576,7 @@ namespace Model
 
 				
 					if(win) restartDriving();
+					
 
 				}
 				else
@@ -537,6 +584,15 @@ namespace Model
 					aMessage.setBody( std::to_string(false));	
 				}
 				masterDeterminated = true;
+				break;
+			}
+
+			case SendBackRequest:
+			{
+				droveBack = true;
+				restartDriving();
+				aMessage.setMessageType(SendBackResponse);
+				
 				break;
 			}
 			case DriveRequest:
@@ -690,10 +746,17 @@ namespace Model
 					win = false;
 				} 
 
+				if(arrived(startPosition)&& droveBack)
+				{
+					drivingAllowed();
+					notifyObservers();
+					droveBack = false;
+					driving = false;
+				}
+
 				if (arrived(goal) || collision())
 				{
 					Application::Logger::log(__PRETTY_FUNCTION__ + std::string(": arrived or collision"));
-					masterDeterminated = false;
 					notifyObservers();
 					if(arrived(goal))
 					{
@@ -702,12 +765,14 @@ namespace Model
 					break;
 				}
 
+
+
 				if(perceptQueue.size() > 0)
 				{	
 					std::shared_ptr<CollisionPercept> CP = std::dynamic_pointer_cast<CollisionPercept>(perceptQueue.dequeue());
 					if(CP->collision && !masterDeterminated)
 					{
-						stopDriving();
+						haltDriving();
 						negotiate();
 					}
 

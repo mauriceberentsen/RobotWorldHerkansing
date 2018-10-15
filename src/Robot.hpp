@@ -139,6 +139,8 @@ namespace Model
 			 *
 			 */
 			virtual void stopDriving();
+
+			void haltDriving();
 			/**
 			 *
 			 * @return true if the robot is communicating, i.e. listens with an active ServerConnection
@@ -187,6 +189,10 @@ namespace Model
 			 * @name Observer functions
 			 */
 			virtual void negotiate();
+			/**
+			 * Send other robot back a few units
+			 */
+			virtual void sendBack();
 
 			virtual void drivingAllowed();
 			//@{
@@ -263,6 +269,8 @@ namespace Model
 				EchoLocation,
 				NegotiateRequest,
 				NegotiateResponse,
+				SendBackRequest,
+				SendBackResponse,
 				DriveRequest,
 				DriveResponse,
 				StartRequest,
@@ -300,12 +308,14 @@ namespace Model
 			GoalPtr goal;
 			PathAlgorithm::AStar astar;
 			PathAlgorithm::Path path;
+			GoalPtr startPosition;
 
 			bool acting;
 			bool driving;
 			bool communicating;
 			bool masterDeterminated = false;
 			bool win =  false;
+			bool droveBack = false;
 
 			std::thread robotThread;
 			mutable std::recursive_mutex robotMutex;
