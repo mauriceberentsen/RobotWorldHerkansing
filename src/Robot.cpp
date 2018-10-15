@@ -794,12 +794,12 @@ namespace Model
 		{
 			for (std::shared_ptr< AbstractSensor > sensor : sensors)
 			{
-				sensor->setOn(50);
+				sensor->setOn(10);
 			}
 
 			if (speed == 0.0)
 			{
-				speed = 2.0;
+				speed = 1.0;
 			}
 
 			unsigned pathPoint = 0;
@@ -853,7 +853,7 @@ namespace Model
 
 				notifyObservers();
 
-				std::this_thread::sleep_for( std::chrono::milliseconds( 50));
+				std::this_thread::sleep_for( std::chrono::milliseconds(10));
 				// this should be the last thing in the loop
 				if(driving == false)
 				{
