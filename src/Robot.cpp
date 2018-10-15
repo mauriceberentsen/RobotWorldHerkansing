@@ -195,6 +195,7 @@ namespace Model
 		driving = false;
 		robotThread.join();
 		RobotWorld::getRobotWorld().deleteGoal(startPosition);
+		perceptQueue.clear();
 	}
 	/**
 	 *
@@ -646,6 +647,10 @@ namespace Model
 			{
 				break;
 			}
+			case SendBackResponse:
+			{
+				break;
+			}
 			case NegotiateResponse:
 			{
 				Application::Logger::log(" Did we win?  " +  aMessage.getBody());
@@ -732,6 +737,7 @@ namespace Model
 			}
 
 			unsigned pathPoint = 0;
+				
 			while (position.x > 0 && position.x < 500 && position.y > 0 && position.y < 500 && pathPoint < path.size())
 			{
 				const PathAlgorithm::Vertex& vertex = path[pathPoint+=speed];
@@ -754,6 +760,16 @@ namespace Model
 					driving = false;
 				}
 
+				if(perceptQueue.size() > 0)
+				{	
+					std::shared_ptr<CollisionPercept> CP = std::dynamic_pointer_cast<CollisionPercept>(perceptQueue.dequeue());
+					if(CP->collision && !masterDeterminated)
+					{
+						haltDriving();
+						negotiate();
+					}
+
+				}
 				if (arrived(goal) || collision())
 				{
 					Application::Logger::log(__PRETTY_FUNCTION__ + std::string(": arrived or collision"));
@@ -767,16 +783,6 @@ namespace Model
 
 
 
-				if(perceptQueue.size() > 0)
-				{	
-					std::shared_ptr<CollisionPercept> CP = std::dynamic_pointer_cast<CollisionPercept>(perceptQueue.dequeue());
-					if(CP->collision && !masterDeterminated)
-					{
-						haltDriving();
-						negotiate();
-					}
-
-				}
 
 
 				notifyObservers();

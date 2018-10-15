@@ -37,6 +37,12 @@ namespace Base
 				queue.pop();
 				return front;
 			}
+
+			void clear()
+			{
+				std::queue<QueueContentType> empty;
+   				std::swap( queue, empty );
+			}
 			/**
 			 *
 			 */
