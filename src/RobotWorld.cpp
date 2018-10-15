@@ -392,15 +392,15 @@ namespace Model
 				 robot->BroadcastPostion();
 				}
 			}
-			RobotWorld::getRobotWorld().newGoal( "Goal", Point(400,400),false);
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(400,360),false);
 		}
 		if(other)
 		{
 			if(!robot)
-				 RobotWorld::getRobotWorld().newRobot( "Robot", Point(400,40),false);
+				 RobotWorld::getRobotWorld().newRobot( "Robot", Point(400,470),false);
 			else 
-				robot->setPosition(Point(400,40));
-			RobotWorld::getRobotWorld().newGoal( "Goal", Point(40,400),false);
+				robot->setPosition(Point(400,470));
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(40,150),false);
 		}
 
 		notifyObservers();
