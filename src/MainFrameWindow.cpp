@@ -311,32 +311,32 @@ namespace Application
 							GBSpan( 1, 1), EXPAND);
 		sizer->Add( makeButton( panel,
 								"Situatie 1",
-										[this](CommandEvent &anEvent){this->OnSyncWorld(anEvent);}),
+										[this](CommandEvent &anEvent){this->OnSituatie1(anEvent);}),
 							GBPosition( 3, 0),
 							GBSpan( 1, 1), EXPAND);
 		sizer->Add( makeButton( panel,
 								"Situatie 2",
-										[this](CommandEvent &anEvent){this->OnSyncWorld(anEvent);}),
+										[this](CommandEvent &anEvent){this->OnSituatie2(anEvent);}),
 							GBPosition( 3, 1),
 							GBSpan( 1, 1), EXPAND);
 		sizer->Add( makeButton( panel,
 								"Situatie 3",
-										[this](CommandEvent &anEvent){this->OnSyncWorld(anEvent);}),
+										[this](CommandEvent &anEvent){this->OnSituatie3(anEvent);}),
 							GBPosition( 3, 2),
 							GBSpan( 1, 1), EXPAND);
 		sizer->Add( makeButton( panel,
 								"Situatie 4",
-										[this](CommandEvent &anEvent){this->OnSyncWorld(anEvent);}),
+										[this](CommandEvent &anEvent){this->OnSituatie4(anEvent);}),
 							GBPosition( 4, 0),
 							GBSpan( 1, 1), EXPAND);
 		sizer->Add( makeButton( panel,
 								"Situatie 5",
-										[this](CommandEvent &anEvent){this->OnSyncWorld(anEvent);}),
+										[this](CommandEvent &anEvent){this->OnSituatie5(anEvent);}),
 							GBPosition( 4, 1),
 							GBSpan( 1, 1), EXPAND);
 		sizer->Add( makeButton( panel,
 								"Situatie 6",
-										[this](CommandEvent &anEvent){this->OnSyncWorld(anEvent);}),
+										[this](CommandEvent &anEvent){this->OnSituatie6(anEvent);}),
 							GBPosition( 4, 2),
 							GBSpan( 1, 1), EXPAND);																																			
 		panel->SetSizerAndFit( sizer);
@@ -439,42 +439,42 @@ namespace Application
 	 */
 	void MainFrameWindow::OnSituatie1( CommandEvent& UNUSEDPARAM(anEvent))
 	{
-		robotWorldCanvas->populate( 2);
+		Model::RobotWorld::getRobotWorld().situationOne();
 	}
 		/**
 	 *
 	 */
 	void MainFrameWindow::OnSituatie2(CommandEvent& UNUSEDPARAM(anEvent))
 	{
-		robotWorldCanvas->populate( 2);
+		Model::RobotWorld::getRobotWorld().situationTwo();
 	}
 		/**
 	 *
 	 */
 	void MainFrameWindow::OnSituatie3( CommandEvent& UNUSEDPARAM(anEvent))
 	{
-		robotWorldCanvas->populate( 2);
+		Model::RobotWorld::getRobotWorld().situationThree();
 	}
 		/**
 	 *
 	 */
 	void MainFrameWindow::OnSituatie4( CommandEvent& UNUSEDPARAM(anEvent))
 	{
-		robotWorldCanvas->populate( 2);
+		Model::RobotWorld::getRobotWorld().situationFour();
 	}
 		/**
 	 *
 	 */
 	void MainFrameWindow::OnSituatie5( CommandEvent& UNUSEDPARAM(anEvent))
 	{
-		robotWorldCanvas->populate( 2);
+		Model::RobotWorld::getRobotWorld().situationFive();
 	}
 	/**
 	 *
 	 */
 	void MainFrameWindow::OnSituatie6( CommandEvent& UNUSEDPARAM(anEvent))
 	{
-		robotWorldCanvas->populate( 2);
+		Model::RobotWorld::getRobotWorld().situationSix();
 	}
 		/**
 	 *

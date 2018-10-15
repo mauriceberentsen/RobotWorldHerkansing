@@ -308,14 +308,222 @@ namespace Model
 		notifyObservers();
 	}
 
-	// void RobotWorld::situatie1()
+	void RobotWorld::situationOne(bool other /* = false*/)
+	{
+		unpopulate();
+		RobotPtr robot = RobotWorld::getRobotWorld().getRobot("Robot");
+		if(!other)
+		{
+			if(!robot)
+				RobotWorld::getRobotWorld().newRobot( "Robot", Point(40,40),false);
+			else
+			{
+				robot->setPosition(Point(40,40));
+				if(robot->isCommunicating())
+				{
+					//TODO SEND MESSAGE
+				}
+			}
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(422,400),false);
+		}
+		if(other)
+		{
+			if(!robot)
+				 RobotWorld::getRobotWorld().newRobot( "Robot", Point(406,477),false);
+			else 
+				robot->setPosition(Point(406,477));
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(106,26),false);
+		}
+
+		notifyObservers();
+	}
+
+	void RobotWorld::situationTwo(bool other /* = false*/)
+	{
+		unpopulate();
+		RobotPtr robot = RobotWorld::getRobotWorld().getRobot("Robot");
+		if(!other)
+		{
+			if(!robot)
+				RobotWorld::getRobotWorld().newRobot( "Robot", Point(40,40),false);
+			else
+			{
+				robot->setPosition(Point(40,40));
+				if(robot->isCommunicating())
+				{
+					//TODO SEND MESSAGE
+				}
+			}
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(400,400),false);
+		}
+		if(other)
+		{
+			if(!robot)
+				 RobotWorld::getRobotWorld().newRobot( "Robot", Point(400,40),false);
+			else 
+				robot->setPosition(Point(400,40));
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(40,400),false);
+		}
+
+		notifyObservers();
+	}
+
+	void RobotWorld::situationThree(bool other /* = false*/)
+	{
+		unpopulate();
+
+		RobotWorld::getRobotWorld().newWall( Point( 0, 200),  Point( 350, 200),false);
+		RobotWorld::getRobotWorld().newWall( Point( 500, 300),  Point( 150, 300),false);
+
+		RobotPtr robot = RobotWorld::getRobotWorld().getRobot("Robot");
+
+		if(!other)
+		{
+			if(!robot)
+				RobotWorld::getRobotWorld().newRobot( "Robot", Point(40,40),false);
+			else
+			{
+				robot->setPosition(Point(40,40));
+				if(robot->isCommunicating())
+				{
+					//TODO SEND MESSAGE
+				}
+			}
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(400,400),false);
+		}
+		if(other)
+		{
+			if(!robot)
+				 RobotWorld::getRobotWorld().newRobot( "Robot", Point(400,40),false);
+			else 
+				robot->setPosition(Point(400,40));
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(40,400),false);
+		}
+
+		notifyObservers();
+	}
+
+
+	void RobotWorld::situationFour(bool other /* = false*/)
+	{
+		unpopulate();
+
+		RobotWorld::getRobotWorld().newWall( Point( 0, 220),  Point( 275, 220),false);
+		RobotWorld::getRobotWorld().newWall( Point( 500, 280),  Point( 225, 280),false);
+
+		RobotPtr robot = RobotWorld::getRobotWorld().getRobot("Robot");
+
+		if(!other)
+		{
+			if(!robot)
+				RobotWorld::getRobotWorld().newRobot( "Robot", Point(40,40),false);
+			else
+			{
+				robot->setPosition(Point(40,40));
+				if(robot->isCommunicating())
+				{
+					//TODO SEND MESSAGE
+				}
+			}
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(400,400),false);
+		}
+		if(other)
+		{
+			if(!robot)
+				 RobotWorld::getRobotWorld().newRobot( "Robot", Point(400,40),false);
+			else 
+				robot->setPosition(Point(400,40));
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(40,400),false);
+		}
+
+		notifyObservers();
+	}
+
+		void RobotWorld::situationFive(bool other /* = false*/)
+	{
+		unpopulate();
+
+		RobotWorld::getRobotWorld().newWall( Point( 0, 250),  Point( 220, 250),false);
+		RobotWorld::getRobotWorld().newWall( Point( 220, 200),  Point( 220, 300),false);
+
+		RobotWorld::getRobotWorld().newWall( Point( 280, 250),  Point( 500, 250),false);
+		RobotWorld::getRobotWorld().newWall( Point( 280, 200),  Point( 280, 300),false);
+
+
+		RobotPtr robot = RobotWorld::getRobotWorld().getRobot("Robot");
+
+		if(!other)
+		{
+			if(!robot)
+				RobotWorld::getRobotWorld().newRobot( "Robot", Point(40,40),false);
+			else
+			{
+				robot->setPosition(Point(40,40));
+				if(robot->isCommunicating())
+				{
+					//TODO SEND MESSAGE
+				}
+			}
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(400,400),false);
+		}
+		if(other)
+		{
+			if(!robot)
+				 RobotWorld::getRobotWorld().newRobot( "Robot", Point(400,40),false);
+			else 
+				robot->setPosition(Point(400,40));
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(40,400),false);
+		}
+
+		notifyObservers();
+	}
+
+	void RobotWorld::situationSix(bool other /* = false*/)
+	{
+		unpopulate();
+
+		RobotWorld::getRobotWorld().newWall( Point( 0, 350),  Point( 220, 350),false);
+		RobotWorld::getRobotWorld().newWall( Point( 220, 300),  Point( 220, 400),false);
+
+		RobotWorld::getRobotWorld().newWall( Point( 280, 350),  Point( 500, 350),false);
+		RobotWorld::getRobotWorld().newWall( Point( 280, 300),  Point( 280, 400),false);
+
+		RobotPtr robot = RobotWorld::getRobotWorld().getRobot("Robot");
+
+		if(!other)
+		{
+			if(!robot)
+				RobotWorld::getRobotWorld().newRobot( "Robot", Point(40,40),false);
+			else
+			{
+				robot->setPosition(Point(40,40));
+				if(robot->isCommunicating())
+				{
+					//TODO SEND MESSAGE
+				}
+			}
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(400,400),false);
+		}
+		if(other)
+		{
+			if(!robot)
+				 RobotWorld::getRobotWorld().newRobot( "Robot", Point(400,40),false);
+			else 
+				robot->setPosition(Point(400,40));
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(40,400),false);
+		}
+
+		notifyObservers();
+	}
+
+	// void RobotWorld::situatie2()
 	// {
 	// 	unpopulate();
 	// 	robot = RobotWorld::getRobotWorld().getRobot("Robot");
 	// 	if(!Robot) RobotWorld::getRobotWorld().newRobot( "Robot", Point(40,40),false);
 	// 	else robot.setPosition(Point(40,40));
 
-	// 	/*
+
 	// 	static Point coordinates[] = { Point( 100, 400), Point( 350, 300),
 	// 								   Point( 300, 100),
 	// 								   Point( 350, 200) };
@@ -324,7 +532,6 @@ namespace Model
 	// 	{
 	// 		RobotWorld::getRobotWorld().newWall( coordinates[i], coordinates[i + 1],false);
 	// 	}
-	// 	*/
 
 	// 	RobotWorld::getRobotWorld().newWall( Point(7,234), Point(419,234) ,false);
 	// 	RobotWorld::getRobotWorld().newGoal( "Goal", Point(320,285),false);

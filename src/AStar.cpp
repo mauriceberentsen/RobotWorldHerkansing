@@ -71,7 +71,7 @@ namespace PathAlgorithm
 			Vertex vertex( aVertex.x + xOffset[i], aVertex.y + yOffset[i]);
 			for (Model::WallPtr wall : walls)
 			{
-				if (Utils::Shape2DUtils::isOnLine( wall->getPoint1(), wall->getPoint2(), vertex.asPoint(), aFreeRadius))
+				if (Utils::Shape2DUtils::isOnLine( wall->getPoint1(), wall->getPoint2(), vertex.asPoint(), aFreeRadius + 2))
 				{
 					addToNeigbours = false;
 					break;
@@ -92,10 +92,10 @@ namespace PathAlgorithm
 				}
 			}
 
-			if (Utils::Shape2DUtils::isOnLine( Point(0,0), Point(View::RobotWorldCanvas::WorldSize,0), vertex.asPoint(), aFreeRadius) || //left down --> left  up
-				Utils::Shape2DUtils::isOnLine( Point(0,0), Point(0,View::RobotWorldCanvas::WorldSize), vertex.asPoint(), aFreeRadius) ||//right down --> right up 
-				Utils::Shape2DUtils::isOnLine( Point(View::RobotWorldCanvas::WorldSize,View::RobotWorldCanvas::WorldSize), Point(View::RobotWorldCanvas::WorldSize,0), vertex.asPoint(), aFreeRadius) || //left down --> right down
-				Utils::Shape2DUtils::isOnLine( Point(View::RobotWorldCanvas::WorldSize,View::RobotWorldCanvas::WorldSize), Point(0,View::RobotWorldCanvas::WorldSize), vertex.asPoint(), aFreeRadius) )	 
+			if (Utils::Shape2DUtils::isOnLine( Point(0,0), Point(View::RobotWorldCanvas::WorldSize,0), vertex.asPoint(), 2) || //left down --> left  up
+				Utils::Shape2DUtils::isOnLine( Point(0,0), Point(0,View::RobotWorldCanvas::WorldSize), vertex.asPoint(), 2) ||//right down --> right up 
+				Utils::Shape2DUtils::isOnLine( Point(View::RobotWorldCanvas::WorldSize,View::RobotWorldCanvas::WorldSize), Point(View::RobotWorldCanvas::WorldSize,0), vertex.asPoint(), 2) || //left down --> right down
+				Utils::Shape2DUtils::isOnLine( Point(View::RobotWorldCanvas::WorldSize,View::RobotWorldCanvas::WorldSize), Point(0,View::RobotWorldCanvas::WorldSize), vertex.asPoint(), 2) )	 
 			{
 				addToNeigbours = false;
 				break;

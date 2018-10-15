@@ -130,17 +130,17 @@ namespace Model
 			 */
 			void unpopulate( bool aNotifyObservers = true);
 
-			void situationOne();
+			void situationOne(bool other = false);
 
-			void situationTwo();
+			void situationTwo(bool other  = false);
 
-			void situationThree();
+			void situationThree(bool other  = false);
 
-			void situationFour();
+			void situationFour(bool other  = false);
 
-			void situationFive();
+			void situationFive(bool other  = false);
 
-			void situationSix();
+			void situationSix(bool other  = false);
 			/**
 			 *
 			 * @param aKeepObjects Keep the objects with these ObjectIdsin the world
