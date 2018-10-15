@@ -305,10 +305,40 @@ namespace Application
 					GBPosition( 2, 2),
 					GBSpan( 1, 1), EXPAND);
 		sizer->Add( makeButton( panel,
-										"sync world",
+								"sync world",
+										[this](CommandEvent &anEvent){this->OnSyncWorld(anEvent);}),
+							GBPosition( 0, 2),
+							GBSpan( 1, 1), EXPAND);
+		sizer->Add( makeButton( panel,
+								"Situatie 1",
 										[this](CommandEvent &anEvent){this->OnSyncWorld(anEvent);}),
 							GBPosition( 3, 0),
-							GBSpan( 1, 3), EXPAND);
+							GBSpan( 1, 1), EXPAND);
+		sizer->Add( makeButton( panel,
+								"Situatie 2",
+										[this](CommandEvent &anEvent){this->OnSyncWorld(anEvent);}),
+							GBPosition( 3, 1),
+							GBSpan( 1, 1), EXPAND);
+		sizer->Add( makeButton( panel,
+								"Situatie 3",
+										[this](CommandEvent &anEvent){this->OnSyncWorld(anEvent);}),
+							GBPosition( 3, 2),
+							GBSpan( 1, 1), EXPAND);
+		sizer->Add( makeButton( panel,
+								"Situatie 4",
+										[this](CommandEvent &anEvent){this->OnSyncWorld(anEvent);}),
+							GBPosition( 4, 0),
+							GBSpan( 1, 1), EXPAND);
+		sizer->Add( makeButton( panel,
+								"Situatie 5",
+										[this](CommandEvent &anEvent){this->OnSyncWorld(anEvent);}),
+							GBPosition( 4, 1),
+							GBSpan( 1, 1), EXPAND);
+		sizer->Add( makeButton( panel,
+								"Situatie 6",
+										[this](CommandEvent &anEvent){this->OnSyncWorld(anEvent);}),
+							GBPosition( 4, 2),
+							GBSpan( 1, 1), EXPAND);																																			
 		panel->SetSizerAndFit( sizer);
 
 		return panel;
@@ -405,6 +435,48 @@ namespace Application
 		}
 	}
 	/**
+	 *
+	 */
+	void MainFrameWindow::OnSituatie1( CommandEvent& UNUSEDPARAM(anEvent))
+	{
+		robotWorldCanvas->populate( 2);
+	}
+		/**
+	 *
+	 */
+	void MainFrameWindow::OnSituatie2(CommandEvent& UNUSEDPARAM(anEvent))
+	{
+		robotWorldCanvas->populate( 2);
+	}
+		/**
+	 *
+	 */
+	void MainFrameWindow::OnSituatie3( CommandEvent& UNUSEDPARAM(anEvent))
+	{
+		robotWorldCanvas->populate( 2);
+	}
+		/**
+	 *
+	 */
+	void MainFrameWindow::OnSituatie4( CommandEvent& UNUSEDPARAM(anEvent))
+	{
+		robotWorldCanvas->populate( 2);
+	}
+		/**
+	 *
+	 */
+	void MainFrameWindow::OnSituatie5( CommandEvent& UNUSEDPARAM(anEvent))
+	{
+		robotWorldCanvas->populate( 2);
+	}
+	/**
+	 *
+	 */
+	void MainFrameWindow::OnSituatie6( CommandEvent& UNUSEDPARAM(anEvent))
+	{
+		robotWorldCanvas->populate( 2);
+	}
+		/**
 	 *
 	 */
 	void MainFrameWindow::OnPopulate( CommandEvent& UNUSEDPARAM(anEvent))

@@ -74,6 +74,7 @@ namespace Model
 	 */
 	Robot::~Robot()
 	{
+		Application::Logger::log(std::to_string(driving) + "  " + std::to_string(acting) + "  " +std::to_string(communicating));
 		if(driving)
 		{
 			stopDriving();
@@ -686,11 +687,13 @@ namespace Model
 				if (arrived(goal) && win){
 					drivingAllowed();
 					notifyObservers();
+					win = false;
 				} 
 
 				if (arrived(goal) || collision())
 				{
 					Application::Logger::log(__PRETTY_FUNCTION__ + std::string(": arrived or collision"));
+					masterDeterminated = false;
 					notifyObservers();
 					if(arrived(goal))
 					{

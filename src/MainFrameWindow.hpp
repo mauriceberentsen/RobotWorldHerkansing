@@ -92,6 +92,12 @@ namespace Application
 			void OnStartRobot( CommandEvent& anEvent);
 			void OnStartBoth( CommandEvent& anEvent);
 			void OnStopRobot( CommandEvent& anEvent);
+			void OnSituatie1( CommandEvent& anEvent);
+			void OnSituatie2(CommandEvent& anEvent);
+			void OnSituatie3( CommandEvent& anEvent);
+			void OnSituatie4( CommandEvent& anEvent);
+			void OnSituatie5( CommandEvent& anEvent);
+			void OnSituatie6( CommandEvent& anEvent);
 			void OnPopulate( CommandEvent& anEvent);
 			void OnUnpopulate( CommandEvent& anEvent);
 			void OnStartListening( CommandEvent& anEvent);

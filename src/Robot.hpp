@@ -255,6 +255,7 @@ namespace Model
 			//@{
 			enum MessageType
 			{
+				notSupported,
 				SyncRequest = 50,
 				SyncResponse,
 				EchoRequest,

@@ -288,7 +288,8 @@ namespace Model
 	 */
 	void RobotWorld::populate( int aNumberOfWalls /*= 2*/)
 	{
-		RobotWorld::getRobotWorld().newRobot( "Robot", Point(163,111),false);
+		RobotPtr robot = RobotWorld::getRobotWorld().getRobot("Robot");
+		if(!robot)	RobotWorld::getRobotWorld().newRobot( "Robot", Point(163,111),false);
 
 		/*
 		static Point coordinates[] = { Point( 100, 400), Point( 350, 300),
@@ -307,23 +308,34 @@ namespace Model
 		notifyObservers();
 	}
 
+	// void RobotWorld::situatie1()
+	// {
+	// 	unpopulate();
+	// 	robot = RobotWorld::getRobotWorld().getRobot("Robot");
+	// 	if(!Robot) RobotWorld::getRobotWorld().newRobot( "Robot", Point(40,40),false);
+	// 	else robot.setPosition(Point(40,40));
 
-	/**
-	 * TODO: alle situaties uitwerken.
-	 */
-	void RobotWorld::situationOne()
-	{
+	// 	/*
+	// 	static Point coordinates[] = { Point( 100, 400), Point( 350, 300),
+	// 								   Point( 300, 100),
+	// 								   Point( 350, 200) };
 
-	}
+	// 	for (int i = 0; i < 2 * aNumberOfWalls; i += 2)
+	// 	{
+	// 		RobotWorld::getRobotWorld().newWall( coordinates[i], coordinates[i + 1],false);
+	// 	}
+	// 	*/
 
+	// 	RobotWorld::getRobotWorld().newWall( Point(7,234), Point(419,234) ,false);
+	// 	RobotWorld::getRobotWorld().newGoal( "Goal", Point(320,285),false);
 
-
+	// 	notifyObservers();
+	// }
 	/**
 	 *
 	 */
 	void RobotWorld::unpopulate( bool aNotifyObservers /*= true*/)
 	{
-		robots.clear();
 		wayPoints.clear();
 		goals.clear();
 		walls.clear();

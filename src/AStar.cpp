@@ -81,10 +81,10 @@ namespace PathAlgorithm
 			{
 				if(otherRobot->getName().compare("Robot") == true)
 				{
-					if (Utils::Shape2DUtils::isOnLine( otherRobot->Robot::getFrontLeft(),otherRobot->Robot::getFrontRight(), vertex.asPoint(), 1) || 
-						Utils::Shape2DUtils::isOnLine( otherRobot->Robot::getBackLeft(),otherRobot->Robot::getBackRight(), vertex.asPoint(), 1)  || 
-						Utils::Shape2DUtils::isOnLine( otherRobot->Robot::getBackLeft(),otherRobot->Robot::getFrontLeft(), vertex.asPoint(), 1)  || 
-						Utils::Shape2DUtils::isOnLine( otherRobot->Robot::getFrontRight(),otherRobot->Robot::getBackRight(), vertex.asPoint(), 1) )	 
+					if (Utils::Shape2DUtils::isOnLine( otherRobot->Robot::getFrontLeft(),otherRobot->Robot::getFrontRight(), vertex.asPoint(), aFreeRadius) || 
+						Utils::Shape2DUtils::isOnLine( otherRobot->Robot::getBackLeft(),otherRobot->Robot::getBackRight(), vertex.asPoint(), aFreeRadius)  || 
+						Utils::Shape2DUtils::isOnLine( otherRobot->Robot::getBackLeft(),otherRobot->Robot::getFrontLeft(), vertex.asPoint(), aFreeRadius)  || 
+						Utils::Shape2DUtils::isOnLine( otherRobot->Robot::getFrontRight(),otherRobot->Robot::getBackRight(), vertex.asPoint(), aFreeRadius) )	 
 					{
 						addToNeigbours = false;
 						break;
@@ -92,10 +92,10 @@ namespace PathAlgorithm
 				}
 			}
 
-			if (Utils::Shape2DUtils::isOnLine( Point(0,0), Point(View::RobotWorldCanvas::WorldSize,0), vertex.asPoint(), 1) || //left down --> left  up
-				Utils::Shape2DUtils::isOnLine( Point(0,0), Point(0,View::RobotWorldCanvas::WorldSize), vertex.asPoint(), 1) ||//right down --> right up 
-				Utils::Shape2DUtils::isOnLine( Point(View::RobotWorldCanvas::WorldSize,View::RobotWorldCanvas::WorldSize), Point(View::RobotWorldCanvas::WorldSize,0), vertex.asPoint(), 1) || //left down --> right down
-				Utils::Shape2DUtils::isOnLine( Point(View::RobotWorldCanvas::WorldSize,View::RobotWorldCanvas::WorldSize), Point(0,View::RobotWorldCanvas::WorldSize), vertex.asPoint(), 1) )	 
+			if (Utils::Shape2DUtils::isOnLine( Point(0,0), Point(View::RobotWorldCanvas::WorldSize,0), vertex.asPoint(), aFreeRadius) || //left down --> left  up
+				Utils::Shape2DUtils::isOnLine( Point(0,0), Point(0,View::RobotWorldCanvas::WorldSize), vertex.asPoint(), aFreeRadius) ||//right down --> right up 
+				Utils::Shape2DUtils::isOnLine( Point(View::RobotWorldCanvas::WorldSize,View::RobotWorldCanvas::WorldSize), Point(View::RobotWorldCanvas::WorldSize,0), vertex.asPoint(), aFreeRadius) || //left down --> right down
+				Utils::Shape2DUtils::isOnLine( Point(View::RobotWorldCanvas::WorldSize,View::RobotWorldCanvas::WorldSize), Point(0,View::RobotWorldCanvas::WorldSize), vertex.asPoint(), aFreeRadius) )	 
 			{
 				addToNeigbours = false;
 				break;
