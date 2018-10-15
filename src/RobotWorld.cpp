@@ -375,7 +375,7 @@ namespace Model
 		unpopulate();
 
 		RobotWorld::getRobotWorld().newWall( Point( 0, 200),  Point( 350, 200),false);
-		RobotWorld::getRobotWorld().newWall( Point( 500, 300),  Point( 150, 300),false);
+		RobotWorld::getRobotWorld().newWall( Point( 150, 300),  Point( 500, 300),false);
 
 		RobotPtr robot = RobotWorld::getRobotWorld().getRobot("Robot");
 
@@ -412,7 +412,7 @@ namespace Model
 		unpopulate();
 
 		RobotWorld::getRobotWorld().newWall( Point( 0, 220),  Point( 275, 220),false);
-		RobotWorld::getRobotWorld().newWall( Point( 500, 280),  Point( 225, 280),false);
+		RobotWorld::getRobotWorld().newWall( Point( 150, 280),  Point( 500, 280),false);
 
 		RobotPtr robot = RobotWorld::getRobotWorld().getRobot("Robot");
 
@@ -425,19 +425,19 @@ namespace Model
 				robot->setPosition(Point(40,40));
 				if(robot->isCommunicating())
 				{
-					robot->setSituation(Robot::MessageType::SituationFour);
-					robot->BroadcastPostion();
+				 robot->setSituation(Robot::MessageType::SituationFour);
+				 robot->BroadcastPostion();
 				}
 			}
-			RobotWorld::getRobotWorld().newGoal( "Goal", Point(400,400),false);
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(400,360),false);
 		}
 		if(other)
 		{
 			if(!robot)
-				 RobotWorld::getRobotWorld().newRobot( "Robot", Point(400,40),false);
+				 RobotWorld::getRobotWorld().newRobot( "Robot", Point(400,470),false);
 			else 
-				robot->setPosition(Point(400,40));
-			RobotWorld::getRobotWorld().newGoal( "Goal", Point(40,400),false);
+				robot->setPosition(Point(400,470));
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(40,150),false);
 		}
 
 		notifyObservers();
@@ -447,11 +447,11 @@ namespace Model
 	{
 		unpopulate();
 
-		RobotWorld::getRobotWorld().newWall( Point( 0, 250),  Point( 220, 250),false);
-		RobotWorld::getRobotWorld().newWall( Point( 220, 200),  Point( 220, 300),false);
+		RobotWorld::getRobotWorld().newWall( Point( 0, 250),  Point( 210, 250),false);
+		RobotWorld::getRobotWorld().newWall( Point( 210, 200),  Point( 210, 300),false);
 
-		RobotWorld::getRobotWorld().newWall( Point( 280, 250),  Point( 500, 250),false);
-		RobotWorld::getRobotWorld().newWall( Point( 280, 200),  Point( 280, 300),false);
+		RobotWorld::getRobotWorld().newWall( Point( 290, 250),  Point( 500, 250),false);
+		RobotWorld::getRobotWorld().newWall( Point( 290, 200),  Point( 290, 300),false);
 
 
 		RobotPtr robot = RobotWorld::getRobotWorld().getRobot("Robot");
@@ -474,10 +474,10 @@ namespace Model
 		if(other)
 		{
 			if(!robot)
-				 RobotWorld::getRobotWorld().newRobot( "Robot", Point(400,40),false);
+				 RobotWorld::getRobotWorld().newRobot( "Robot", Point(40,400),false);
 			else 
-				robot->setPosition(Point(400,40));
-			RobotWorld::getRobotWorld().newGoal( "Goal", Point(40,400),false);
+				robot->setPosition(Point(40,400));
+			RobotWorld::getRobotWorld().newGoal( "Goal", Point(400,40),false);
 		}
 
 		notifyObservers();
@@ -487,11 +487,11 @@ namespace Model
 	{
 		unpopulate();
 
-		RobotWorld::getRobotWorld().newWall( Point( 0, 350),  Point( 220, 350),false);
-		RobotWorld::getRobotWorld().newWall( Point( 220, 300),  Point( 220, 400),false);
+		RobotWorld::getRobotWorld().newWall( Point( 0, 350),  Point( 210, 350),false);
+		RobotWorld::getRobotWorld().newWall( Point( 210, 300),  Point( 210, 400),false);
 
-		RobotWorld::getRobotWorld().newWall( Point( 280, 350),  Point( 500, 350),false);
-		RobotWorld::getRobotWorld().newWall( Point( 280, 300),  Point( 280, 400),false);
+		RobotWorld::getRobotWorld().newWall( Point( 290, 350),  Point( 500, 350),false);
+		RobotWorld::getRobotWorld().newWall( Point( 290, 300),  Point( 290, 400),false);
 
 		RobotPtr robot = RobotWorld::getRobotWorld().getRobot("Robot");
 
@@ -504,7 +504,7 @@ namespace Model
 				robot->setPosition(Point(40,40));
 				if(robot->isCommunicating())
 				{
-					robot->setSituation(Robot::MessageType::SituationFive);
+					robot->setSituation(Robot::MessageType::SituationSix);
 					robot->BroadcastPostion();
 				}
 			}
