@@ -194,7 +194,7 @@ namespace Model
 			 */
 			virtual void sendBack();
 
-		    virtual void setSituation(Model::Robot::MessageType situation);
+		    
 
 			virtual void drivingAllowed();
 			//@{
@@ -276,8 +276,17 @@ namespace Model
 				DriveRequest,
 				DriveResponse,
 				StartRequest,
-				StartResponse
+				StartResponse,
+				SituationOne,
+				SituationTwo,
+				SituationThree,
+				SituationFour,
+				SituationFive,
+				SituationSix
+
 			};
+
+			virtual void setSituation(Model::Robot::MessageType situation);
 //TODO add getter for these three and make them private again
 			Size size;
 			Point position;
