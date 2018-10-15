@@ -194,6 +194,8 @@ namespace Model
 			 */
 			virtual void sendBack();
 
+		    virtual void setSituation(Model::Robot::MessageType situation);
+
 			virtual void drivingAllowed();
 			//@{
 			/**

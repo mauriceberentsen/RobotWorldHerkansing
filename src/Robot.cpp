@@ -442,6 +442,36 @@ namespace Model
 		
 	}
 
+	void Robot::setSituation(Model::Robot::MessageType situation)
+	{
+			std::string remoteIpAdres = "localhost";
+			std::string remotePort = "12345";
+			Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot( "Robot");
+			if(robot)
+				{
+				if (Application::MainApplication::isArgGiven( "-remote_ip"))
+				{
+					remoteIpAdres = Application::MainApplication::getArg( "-remote_ip").value;
+				}
+				if (Application::MainApplication::isArgGiven( "-remote_port"))
+				{
+					remotePort = Application::MainApplication::getArg( "-remote_port").value;
+				}
+
+				// We will request an echo message. The response will be "Hello World", if all goes OK,
+				// "Goodbye cruel world!" if something went wrong.
+				Messaging::Client c1ient( remoteIpAdres,
+										remotePort,
+										robot);
+				Messaging::Message message( situation," ");
+				c1ient.dispatchMessage( message);
+			}
+			else
+			{
+				std::cout<<"Something went wrong"<<std::endl;
+			}
+	}
+
 	void Robot::sendBack()
 	{
 			std::string remoteIpAdres = "localhost";
@@ -613,6 +643,42 @@ namespace Model
 				break;
 			}
 
+			case SituationOne:
+			{
+				RobotWorld::getRobotWorld().situationOne(true);
+				BroadcastPostion();
+				break;
+			}
+			case SituationTwo:
+			{
+				RobotWorld::getRobotWorld().situationTwo(true);
+				BroadcastPostion();
+				break;
+			}
+			case SituationThree:
+			{
+				RobotWorld::getRobotWorld().situationThree(true);
+				BroadcastPostion();
+				break;
+			}
+			case SituationFour:
+			{
+				RobotWorld::getRobotWorld().situationFour(true);
+				BroadcastPostion();
+				break;
+			}
+			case SituationFive:
+			{
+				RobotWorld::getRobotWorld().situationFive(true);
+				BroadcastPostion();
+				break;
+			}
+			case SituationSix:
+			{
+				RobotWorld::getRobotWorld().situationSix(true);
+				BroadcastPostion();
+				break;
+			}												
 			
 			default:
 			{
